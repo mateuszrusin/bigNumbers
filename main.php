@@ -32,20 +32,15 @@ class BigNumbers {
         for ($i = $this->length - 1; $i >= 0; $i--)
         {
             $sum = (int) $this->firstNum[$i] + (int) $this->secondNum[$i] + $transmission;
-
-            if ($sum >  9 && $i > 0)
+            $transmission = intdiv($sum, 10);
+            
+            if ($i > 0)
             {
-                $result = substr($sum, -1) . $result;
-                $transmission = 1;
-            }
-            else 
-            {
-                $result = (string) $sum . $result;
-                $transmission = 0;
-            }
+                $result = ($sum % 10) . $result;
+            }    
         }
 
-        return $result;
+        return $sum . $result;
     }
 
     private function init(string $firstNum, string $secondNum): void
@@ -59,7 +54,7 @@ class BigNumbers {
         } 
         else 
         {
-            $this->firstNum = str_pad($firstNum, $this->length, '0', STR_PAD_LEFT);;
+            $this->firstNum = str_pad($firstNum, $this->length, '0', STR_PAD_LEFT);
             $this->secondNum = $secondNum;
         }
     }
