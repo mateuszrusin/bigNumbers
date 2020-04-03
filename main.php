@@ -4,37 +4,35 @@ class Runner {
 
     public static function run()
     {
-        $firstNum = trim(readline("Enter first number:  "));
-        $secondNum = trim(readline("Enter second number: "));
+        $x = trim(readline("Enter first number:  "));
+        $y = trim(readline("Enter second number: "));
 
-        $bigNumbers = new BigNumbers($firstNum, $secondNum);
+        $bigNumbers = new BigNumbers();
             
-        echo "Sum:                 " . $bigNumbers->sum() . "\n";
+        echo "Sum:                 " . $bigNumbers->sum($x, $y) . "\n";
+        echo "Diff:                " . $bigNumbers->diff($x, $y) . "\n";
+        echo "Multi:               " . $bigNumbers->multi($x, $y) . "\n";
+        echo "Factorial {$x}:      " . $bigNumbers->factorial($x) . "\n";
+        echo "Factorial {$y}:      " . $bigNumbers->factorial($y) . "\n";
     }
 }
 
 class BigNumbers {
     
-    private array $numbers = [];
-    private int $length;
-
-    public function __construct(string $firstNum, string $secondNum)
-    {
-        $this->init($firstNum, $secondNum);
-    }
-
-    public function sum(): string 
+    public function sum(string $x, string $y): string 
     {
         $result = '';
         $transmission = 0;
 
-        for ($i = $this->length - 1; $i >= 0; $i--)
+        list($x, $y, ) = $this->order($x, $y);
+
+        for ($i = strlen($x) - 1; $i >= 0; $i--)
         {
-            $sum = (int) $this->numbers[0][$i] + (int) $this->numbers[1][$i] + $transmission;
-            $transmission = intdiv($sum, 10);
+            $sum = (int) $x[$i] + (int) $y[$i] + $transmission;
             
             if ($i > 0)
             {
+                $transmission = intdiv($sum, 10);
                 $result = ($sum % 10) . $result;
             }    
         }
@@ -42,13 +40,104 @@ class BigNumbers {
         return $sum . $result;
     }
 
-    private function init(string $firstNum, string $secondNum): void
+    public function diff(string $x, string $y): string 
     {
-        $this->length = max([strlen($firstNum), strlen($secondNum)]);
-        $this->numbers = [
-            str_pad($firstNum, $this->length, '0', STR_PAD_LEFT), 
-            str_pad($secondNum, $this->length, '0', STR_PAD_LEFT),
-        ];
+        $result = '';
+        $transmission = 0;
+
+        list($x, $y, $sign) = $this->order($x, $y);
+
+        for ($i = strlen($x) - 1; $i >= 0; $i--)
+        {
+            $diff = (int) $x[$i] - (int) $y[$i] - $transmission;
+            
+            if ($i > 0)
+            {
+                $transmission = (int) ($diff < 0);
+                $result = ($diff + $transmission * 10) . $result;
+            }    
+        }
+
+        return $sign . ltrim($diff . $result, '0');
+    }
+
+    public function multi(string $x, string $y): string 
+    {
+        $result = '';
+
+        list($x, $y, ) = $this->order($x, $y);
+        $length = strlen($x) - 1;
+
+        for ($i = $length; $i >= 0; $i--)    
+        {
+            $product = '';
+            $transmission = 0;
+            for ($j = $length; $j >= 0; $j--)
+            {
+                $multi = $x[$i] * $y[$j] + $transmission;
+                if ($j > 0)
+                {
+                    $transmission = intdiv($multi, 10);
+                    $product = ($multi % 10) . $product;
+                }
+                else
+                {
+                    $product = $multi . $product;
+                }
+            }
+
+            $result = $this->sum(
+                $result, $this->pad_right($product, strlen($product) + $length - $i)
+            );
+        }
+        
+        return ltrim($result, '0');
+    }
+
+    public function factorial(string $n): string 
+    {
+        if ($n < 2)
+        {
+            return '1';
+        }
+
+        $p = $this->diff($n, '1');
+        $m = $this->factorial($p);
+
+        return $this->multi($m, $n);
+    }
+
+    private function order(string $x, string $y): array
+    {
+        $lenx = strlen($x);
+        $leny = strlen($y);
+
+        if ($lenx < $leny)
+        {
+            return [$this->pad_left($y, $leny), $this->pad_left($x, $leny), '-'];
+        }
+        elseif ($lenx === $leny)
+        {
+            for ($i = 0; $i < $lenx; $i++)
+            {
+                if ($x[$i] < $y[$i])
+                {
+                    return [$this->pad_left($y, $leny), $this->pad_left($x, $lenx), '-'];
+                }
+            }   
+        }
+
+        return [$this->pad_left($x, $lenx), $this->pad_left($y, $lenx), ''];
+    }
+
+    private function pad_left(string $string, int $length): string
+    {
+        return str_pad($string, $length, '0', STR_PAD_LEFT);
+    }
+
+    private function pad_right(string $string, int $length): string
+    {
+        return str_pad($string, $length, '0', STR_PAD_RIGHT);
     }
 }
 
