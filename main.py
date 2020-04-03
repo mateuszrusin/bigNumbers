@@ -6,19 +6,14 @@ class BigNumbers(object):
 
     def __init__(self, first_num, second_num):
         self.len = int(max(len(first_num), len(second_num)))
-        if self.len > len(first_num):
-            self.first_num = first_num.zfill(self.len)
-            self.second_num = second_num
-        else:
-            self.first_num = first_num
-            self.second_num = second_num.zfill(self.len)
+        self.numbers = (first_num.zfill(self.len), second_num.zfill(self.len))
 
     def sum(self):
         result = ''
         transmission = 0
 
         for i in range(self.len - 1, -1, -1):
-            sum = int(self.first_num[i]) + int(self.second_num[i]) + transmission
+            sum = int(self.numbers[0][i]) + int(self.numbers[1][i]) + transmission
             transmission = sum // 10
             if i > 0:
                 result = '{}{}'.format(sum % 10, result)

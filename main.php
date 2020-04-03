@@ -15,8 +15,7 @@ class Runner {
 
 class BigNumbers {
     
-    private string $firstNum;
-    private string $secondNum;
+    private array $numbers = [];
     private int $length;
 
     public function __construct(string $firstNum, string $secondNum)
@@ -31,7 +30,7 @@ class BigNumbers {
 
         for ($i = $this->length - 1; $i >= 0; $i--)
         {
-            $sum = (int) $this->firstNum[$i] + (int) $this->secondNum[$i] + $transmission;
+            $sum = (int) $this->numbers[0][$i] + (int) $this->numbers[1][$i] + $transmission;
             $transmission = intdiv($sum, 10);
             
             if ($i > 0)
@@ -46,17 +45,10 @@ class BigNumbers {
     private function init(string $firstNum, string $secondNum): void
     {
         $this->length = max([strlen($firstNum), strlen($secondNum)]);
-
-        if (isset($firstNum[$this->length - 1])) 
-        {
-            $this->firstNum = $firstNum;
-            $this->secondNum = str_pad($secondNum, $this->length, '0', STR_PAD_LEFT);
-        } 
-        else 
-        {
-            $this->firstNum = str_pad($firstNum, $this->length, '0', STR_PAD_LEFT);
-            $this->secondNum = $secondNum;
-        }
+        $this->numbers = [
+            str_pad($firstNum, $this->length, '0', STR_PAD_LEFT), 
+            str_pad($secondNum, $this->length, '0', STR_PAD_LEFT),
+        ];
     }
 }
 
