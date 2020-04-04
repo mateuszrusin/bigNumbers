@@ -1,21 +1,6 @@
 <?php
 
-class Runner {
-
-    public static function run()
-    {
-        $x = trim(readline("Enter first number:  "));
-        $y = trim(readline("Enter second number: "));
-
-        $bigNumbers = new BigNumbers();
-            
-        echo "Sum:                 " . $bigNumbers->sum($x, $y) . "\n";
-        echo "Diff:                " . $bigNumbers->diff($x, $y) . "\n";
-        echo "Multi:               " . $bigNumbers->multi($x, $y) . "\n";
-        echo "Factorial {$x}:      " . $bigNumbers->factorial($x) . "\n";
-        echo "Factorial {$y}:      " . $bigNumbers->factorial($y) . "\n";
-    }
-}
+namespace App;
 
 class BigNumbers {
     
@@ -58,7 +43,7 @@ class BigNumbers {
             }    
         }
 
-        return $sign . ltrim($diff . $result, '0');
+        return $sign . (ltrim($diff . $result, '0') ?: 0);
     }
 
     public function multi(string $x, string $y): string 
@@ -112,19 +97,18 @@ class BigNumbers {
         $lenx = strlen($x);
         $leny = strlen($y);
 
-        if ($lenx < $leny)
-        {
+        if ($lenx < $leny) {
             return [$this->pad_left($y, $leny), $this->pad_left($x, $leny), '-'];
         }
-        elseif ($lenx === $leny)
-        {
+
+        if ($lenx === $leny) {
             for ($i = 0; $i < $lenx; $i++)
             {
                 if ($x[$i] < $y[$i])
                 {
                     return [$this->pad_left($y, $leny), $this->pad_left($x, $lenx), '-'];
                 }
-            }   
+            }
         }
 
         return [$this->pad_left($x, $lenx), $this->pad_left($y, $lenx), ''];
@@ -140,5 +124,3 @@ class BigNumbers {
         return str_pad($string, $length, '0', STR_PAD_RIGHT);
     }
 }
-
-Runner::run();
