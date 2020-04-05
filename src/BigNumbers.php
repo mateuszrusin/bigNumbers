@@ -4,25 +4,49 @@ namespace App;
 
 class BigNumbers {
     
-    public function sum(string $x, string $y): string 
+    public function factorial(string $n): string
     {
-        $result = '';
-        $transmission = 0;
-
-        list($x, $y, ) = $this->order($x, $y);
-
-        for ($i = strlen($x) - 1; $i >= 0; $i--)
+        if ($n < 2)
         {
-            $sum = (int) $x[$i] + (int) $y[$i] + $transmission;
-            
-            if ($i > 0)
-            {
-                $transmission = intdiv($sum, 10);
-                $result = ($sum % 10) . $result;
-            }    
+            return '1';
         }
 
-        return $sum . $result;
+        $p = $this->diff($n, '1');
+        $m = $this->factorial($p);
+
+        return $this->multi($m, $n);
+    }
+
+    public function pow(string $x, string $y): string
+    {
+        if ($y < 1)
+        {
+            return '1';
+        }
+
+        $p = $this->diff($y, '1');
+        $m = $this->pow($x, $p);
+
+        return $this->multi($x, $m);
+    }
+
+    public function pow2(string $x, string $y): string
+    {
+        $result = '1';
+
+        while ($y)
+        {
+            $result = $this->multi($result, $x);
+            $y = $this->diff($y, '1');
+        }
+
+        return $result;
+    }
+
+
+    public function div(string $x, string $y): string
+    {
+
     }
 
     public function diff(string $x, string $y): string 
@@ -30,11 +54,11 @@ class BigNumbers {
         $result = '';
         $transmission = 0;
 
-        list($x, $y, $sign) = $this->order($x, $y);
+        [$x, $y, $sign] = $this->order($x, $y);
 
         for ($i = strlen($x) - 1; $i >= 0; $i--)
         {
-            $diff = (int) $x[$i] - (int) $y[$i] - $transmission;
+            $diff = $x[$i] - $y[$i] - $transmission;
             
             if ($i > 0)
             {
@@ -46,14 +70,14 @@ class BigNumbers {
         return $sign . (ltrim($diff . $result, '0') ?: 0);
     }
 
-    public function multi(string $x, string $y): string 
+    public function multi(string $x, string $y): string
     {
         $result = '';
 
-        list($x, $y, ) = $this->order($x, $y);
+        [$x, $y,] = $this->order($x, $y);
         $length = strlen($x) - 1;
 
-        for ($i = $length; $i >= 0; $i--)    
+        for ($i = $length; $i >= 0; $i--)
         {
             $product = '';
             $transmission = 0;
@@ -75,21 +99,29 @@ class BigNumbers {
                 $result, $this->pad_right($product, strlen($product) + $length - $i)
             );
         }
-        
+
         return ltrim($result, '0');
     }
 
-    public function factorial(string $n): string 
+    public function sum(string $x, string $y): string
     {
-        if ($n < 2)
+        $result = '';
+        $transmission = 0;
+
+        [$x, $y,] = $this->order($x, $y);
+
+        for ($i = strlen($x) - 1; $i >= 0; $i--)
         {
-            return '1';
+            $sum = $x[$i] + $y[$i] + $transmission;
+
+            if ($i > 0)
+            {
+                $transmission = intdiv($sum, 10);
+                $result = ($sum % 10) . $result;
+            }
         }
 
-        $p = $this->diff($n, '1');
-        $m = $this->factorial($p);
-
-        return $this->multi($m, $n);
+        return $sum . $result;
     }
 
     private function order(string $x, string $y): array
@@ -97,11 +129,13 @@ class BigNumbers {
         $lenx = strlen($x);
         $leny = strlen($y);
 
-        if ($lenx < $leny) {
+        if ($lenx < $leny)
+        {
             return [$this->pad_left($y, $leny), $this->pad_left($x, $leny), '-'];
         }
 
-        if ($lenx === $leny) {
+        if ($lenx === $leny)
+        {
             for ($i = 0; $i < $lenx; $i++)
             {
                 if ($x[$i] < $y[$i])
