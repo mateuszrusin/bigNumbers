@@ -46,11 +46,12 @@ class BigNumbers {
 
     public function div(string $x, string $y): string
     {
-
+        return 'Non implemented yet';
     }
 
     public function diff(string $x, string $y): string 
     {
+        $diff = '';
         $result = '';
         $transmission = 0;
 
@@ -105,6 +106,7 @@ class BigNumbers {
 
     public function sum(string $x, string $y): string
     {
+        $sum = '';
         $result = '';
         $transmission = 0;
 
